@@ -1,0 +1,149 @@
+import React, { useState, useEffect } from 'react';
+import { 
+  Search, Layout, Package, TrendingUp, BarChart3, Crown, ShieldCheck, 
+  Smartphone, MessageCircle, ArrowRight, Flame, Globe, CheckCircle2, 
+  Timer, Lock, ArrowLeft, Copy, Info
+} from 'lucide-react';
+
+// --- CONFIGURAÇÕES DO CEO ---
+const CONFIG = {
+  CEO_NOME: "Firmino Tchimbungo",
+  CEO_INFO: "Especialista em Vendas Online (5+ anos)",
+  EMAIL_SUPORTE: "vortexdigitalangola@gmail.com",
+  WHATSAPP_SUPORTE: "244957408493",
+  MCX_EXPRESS: "937441164",
+  REFERENCIA: "10116"
+};
+
+export default function VortexFullApp() {
+  const [view, setView] = useState('login'); // login, pricing, checkout, dashboard
+  const [user, setUser] = useState(null);
+  const [selectedPlan, setSelectedPlan] = useState(null);
+  const [nicho, setNicho] = useState('Dropshipping');
+  const [copied, setCopied] = useState(false);
+
+  // 1. LÓGICA DE LOGIN E SEGURANÇA (BLOQUEIO 24H)
+  const handleLogin = (email) => {
+    const newUser = {
+      email,
+      plano: 'Gratuito',
+      criadoEm: new Date().getTime(),
+      expiraEm: new Date().getTime() + (24 * 60 * 60 * 1000) // 24 Horas
+    };
+    setUser(newUser);
+    
+    // Verificar se já expirou (Simulação)
+    if (new Date().getTime() > newUser.expiraEm) {
+      setView('pricing');
+    } else {
+      setView('dashboard');
+    }
+  };
+
+  const copyToClipboard = (text) => {
+    navigator.clipboard.writeText(text);
+    setCopied(true);
+    setTimeout(() => setCopied(false), 2000);
+  };
+
+  // --- COMPONENTE: TELA DE LOGIN ---
+  if (view === 'login') return (
+    <div className="min-h-screen bg-[#0f172a] flex flex-col lg:flex-row text-white">
+      <div className="lg:w-1/2 p-12 flex flex-col justify-center bg-gradient-to-br from-[#0f172a] to-[#1e293b]">
+        <h1 className="text-6xl font-black text-blue-500 italic mb-4 tracking-tighter">VORTEX</h1>
+        <p className="text-2xl font-bold mb-8 text-slate-300 italic">Domine o mercado com inteligência de dados.</p>
+        <div className="bg-slate-800/50 p-6 rounded-3xl border border-slate-700 flex items-center gap-5 max-w-md">
+          <div className="w-14 h-14 bg-blue-600 rounded-2xl flex items-center justify-center font-black">FT</div>
+          <div>
+            <p className="font-black text-sm">{CONFIG.CEO_NOME}</p>
+            <p className="text-blue-500 text-[10px] font-bold uppercase">{CONFIG.CEO_INFO}</p>
+          </div>
+        </div>
+      </div>
+      <div className="lg:w-1/2 flex items-center justify-center p-8">
+        <div className="max-w-md w-full bg-[#1e293b] rounded-[3rem] p-10 border border-slate-800 shadow-2xl">
+          <h2 className="text-xl font-black mb-8 text-center italic uppercase tracking-widest">Aceder ao Radar</h2>
+          <input type="email" placeholder="Teu melhor e-mail" className="w-full bg-slate-900 p-5 rounded-2xl mb-4 outline-none focus:ring-2 focus:ring-blue-600 transition" />
+          <button onClick={() => handleLogin('user@email.com')} className="w-full py-5 bg-blue-600 hover:bg-blue-500 rounded-2xl font-black uppercase text-xs tracking-widest transition">Iniciar Teste Grátis (24h)</button>
+        </div>
+      </div>
+    </div>
+  );
+
+  // --- COMPONENTE: TABELA DE PREÇOS ---
+  if (view === 'pricing') return (
+    <div className="min-h-screen bg-[#0f172a] flex items-center justify-center p-6 text-white">
+      <div className="max-w-4xl w-full grid grid-cols-1 md:grid-cols-2 gap-8">
+        {[ {t: 'Pro', p: '8.000', c: 'blue'}, {t: 'Master', p: '25.000', c: 'yellow'} ].map(p => (
+          <div key={p.t} className={`bg-[#1e293b] p-10 rounded-[3rem] border ${p.c === 'yellow' ? 'border-yellow-500' : 'border-slate-700'} text-center`}>
+            <h3 className={`text-${p.c}-500 font-black uppercase mb-4 tracking-widest`}>{p.t}</h3>
+            <p className="text-5xl font-black mb-8">{p.p} Kz</p>
+            <button onClick={() => { setSelectedPlan(p); setView('checkout'); }} className={`w-full py-4 rounded-2xl font-black uppercase text-xs bg-${p.c === 'yellow' ? 'yellow-500 text-black' : 'blue-600 text-white'}`}>Ativar {p.t}</button>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+
+  // --- COMPONENTE: CHECKOUT MCX EXPRESS ---
+  if (view === 'checkout') return (
+    <div className="min-h-screen bg-[#0f172a] flex items-center justify-center p-6 text-white">
+      <div className="max-w-md w-full bg-[#1e293b] rounded-[3rem] border border-slate-700 overflow-hidden shadow-2xl">
+        <div className="bg-blue-600 p-8 text-center relative">
+          <button onClick={() => setView('pricing')} className="absolute left-6 top-8 text-blue-200"><ArrowLeft size={20}/></button>
+          <h2 className="font-black italic text-xl">PAGAMENTO MCX</h2>
+        </div>
+        <div className="p-10 space-y-6">
+          <div className="bg-slate-800 p-5 rounded-2xl relative">
+            <span className="text-[9px] font-black text-slate-500 uppercase">Telemóvel Express</span>
+            <p className="text-xl font-mono font-bold text-blue-400">{CONFIG.MCX_EXPRESS}</p>
+            <button onClick={() => copyToClipboard(CONFIG.MCX_EXPRESS)} className="absolute right-4 top-1/2 -translate-y-1/2">{copied ? <CheckCircle2 size={18} className="text-green-500"/> : <Copy size={18} className="text-slate-500"/>}</button>
+          </div>
+          <div className="bg-slate-800 p-5 rounded-2xl">
+            <span className="text-[9px] font-black text-slate-500 uppercase">Referência</span>
+            <p className="text-xl font-mono font-bold text-yellow-500">{CONFIG.REFERENCIA}</p>
+          </div>
+          <button onClick={() => window.open(`https://wa.me/${CONFIG.WHATSAPP_SUPORTE}?text=Enviei o comprovativo do plano ${selectedPlan?.t}`, '_blank')} className="w-full py-5 bg-[#25D366] rounded-2xl font-black uppercase text-xs flex items-center justify-center gap-2">
+            <MessageCircle size={18}/> Enviar Comprovativo
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+
+  // --- COMPONENTE: DASHBOARD PRINCIPAL ---
+  return (
+    <div className="min-h-screen bg-[#0f172a] flex text-white">
+      <aside className="w-64 bg-[#1e293b] p-8 hidden lg:flex flex-col border-r border-slate-800">
+        <h2 className="text-2xl font-black italic text-blue-500 mb-10">VORTEX</h2>
+        <nav className="space-y-6">
+          {['Dropshipping', 'Marketing Digital', 'Opções Binárias'].map(n => (
+            <button key={n} onClick={() => setNicho(n)} className={`w-full flex items-center gap-3 text-xs font-black uppercase tracking-widest ${nicho === n ? 'text-blue-500' : 'text-slate-500'}`}>
+              {n === 'Dropshipping' ? <Package size={18}/> : n === 'Opções Binárias' ? <BarChart3 size={18}/> : <TrendingUp size={18}/>}
+              {n}
+            </button>
+          ))}
+        </nav>
+      </aside>
+      <main className="flex-grow p-8">
+        <header className="flex justify-between items-center mb-12">
+          <h1 className="text-2xl font-black italic uppercase">Radar: <span className="text-blue-500">{nicho}</span></h1>
+          <div className="bg-orange-500/10 text-orange-500 p-3 rounded-2xl border border-orange-500/20 text-[10px] font-black">
+            EXPIRA EM: 23H 59M
+          </div>
+        </header>
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          <div className="bg-[#1e293b] p-8 rounded-[2.5rem] border border-slate-700 hover:border-blue-500 transition cursor-pointer">
+            <div className="h-32 bg-slate-800 rounded-2xl mb-4 flex items-center justify-center italic text-slate-600 uppercase text-[10px] font-bold">Imagem Minerada</div>
+            <h3 className="font-bold text-lg mb-2">Exemplo de Produto Vencedor</h3>
+            <p className="text-xs text-slate-500 mb-4">📍 Luanda, Angola</p>
+            <div className="flex justify-between items-center">
+               <span className="text-blue-500 font-black text-[10px]">92% ESCALA</span>
+               <ArrowRight size={18} className="text-slate-700"/>
+            </div>
+          </div>
+        </div>
+      </main>
+    </div>
+  );
+}
